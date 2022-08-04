@@ -1,5 +1,5 @@
-resource "aws_vpc" "Name" {                
-   cidr_block = "${var.main_vpc_cidr}"    
+resource "aws_vpc" "Main" {                
+   cidr_block       = "${var.main_vpc_cidr}"    
    instance_tenancy = "default"
    enable_dns_hostnames = true
   tags = {
@@ -8,33 +8,33 @@ resource "aws_vpc" "Name" {
  }
 
  resource "aws_subnet" "publicsubnets" {    
-   vpc_id =  aws_vpc.Name.id
+   vpc_id =  aws_vpc.Main.id
    cidr_block = "${var.public_subnets}"
    availability_zone = "${var.public_subnet_region}"
    map_public_ip_on_launch = true
    tags = {
-    Name = "pub-subnet"
+    Name = "Public Subnet"
   }        
  }
                     
  resource "aws_subnet" "privatesubnets" {
-   vpc_id =  aws_vpc.Name.id
+   vpc_id =  aws_vpc.Main.id
    cidr_block = "${var.private_subnets}"
    availability_zone = "${var.private_subnet_region}"
    tags = {
-    Name = "pri-subnet"
+    Name = "Private Subnet"
   }                                           
  }
 
  resource "aws_internet_gateway" "IGW" {    
-    vpc_id =  aws_vpc.Name.id
+    vpc_id =  aws_vpc.Main.id
     tags = {
     Name = "IG-Public-&-Private-VPC"
   }               
  }
 
  resource "aws_route_table" "PublicRT" {   
-    vpc_id =  aws_vpc.Name.id
+    vpc_id =  aws_vpc.Main.id
          route {
     cidr_block = "0.0.0.0/0"               
     gateway_id = aws_internet_gateway.IGW.id
@@ -112,10 +112,10 @@ resource "aws_vpc" "Name" {
  
 
 
- resource "aws_instance" "my_instance1" {
+ resource "aws_instance" "my_instance" {
   ami = "ami-052efd3df9dad4825"
   instance_type = "t2.micro"
-  key_name = "terraformkey"
+  key_name = "terraform"
   subnet_id = aws_subnet.publicsubnets.id
   security_groups = ["${aws_security_group.taskmain.id}"]
   user_data = "${file("docker.sh")}"
@@ -127,7 +127,7 @@ resource "aws_vpc" "Name" {
   resource "aws_instance" "my_instance2" {
   ami = "ami-052efd3df9dad4825"
   instance_type = "t2.micro"
-  key_name = "terraformkey"
+  key_name = "terraform"
   subnet_id = aws_subnet.privatesubnets.id
   security_groups = ["${aws_security_group.taskmain.id}"]
   user_data = "${file("docker.sh")}"
