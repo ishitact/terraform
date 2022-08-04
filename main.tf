@@ -115,7 +115,7 @@ resource "aws_vpc" "Main" {
  resource "aws_instance" "my_instance" {
   ami = "ami-052efd3df9dad4825"
   instance_type = "t2.micro"
-  key_name = "terraform"
+  key_name = "terraformkey"
   subnet_id = aws_subnet.publicsubnets.id
   security_groups = ["${aws_security_group.taskmain.id}"]
   user_data = "${file("docker.sh")}"
@@ -127,7 +127,7 @@ resource "aws_vpc" "Main" {
   resource "aws_instance" "my_instance2" {
   ami = "ami-052efd3df9dad4825"
   instance_type = "t2.micro"
-  key_name = "terraform"
+  key_name = "terraformkey"
   subnet_id = aws_subnet.privatesubnets.id
   security_groups = ["${aws_security_group.taskmain.id}"]
   user_data = "${file("docker.sh")}"
