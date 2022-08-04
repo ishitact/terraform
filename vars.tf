@@ -1,4 +1,4 @@
-variable "region" { 
+variable "region" {
   }
 variable "main_vpc_cidr" {
   }
